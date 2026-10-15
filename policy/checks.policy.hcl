@@ -5,7 +5,7 @@ resource_policy "aws_s3_bucket" "require_owner_tag" {
   enforcement_level = "mandatory"
   operations        = ["create", "update"]
   enforce {
-    condition     = attrs.tags != null && lookup(attrs.tags, "Owner", null) != null
+    condition     = attrs.tags != null && core::lookup(attrs.tags, "Owner", null) != null
     error_message = "S3 bucket must have an Owner tag"
   }
 }
@@ -14,8 +14,8 @@ resource_policy "aws_s3_bucket" "require_owner_tag" {
 resource_policy "aws_security_group" "no_open_ssh" {
   enforcement_level = "advisory"
   enforce {
-    condition = alltrue([
-      for r in attrs.ingress : !(contains(r.cidr_blocks, "0.0.0.0/0") && r.from_port <= 22 && r.to_port >= 22)
+    condition = core::alltrue([
+      for r in attrs.ingress : !(core::contains(r.cidr_blocks, "0.0.0.0/0") && r.from_port <= 22 && r.to_port >= 22)
     ])
     error_message = "Security group must not allow SSH from 0.0.0.0/0"
   }
