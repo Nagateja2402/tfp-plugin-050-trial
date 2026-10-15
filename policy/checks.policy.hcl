@@ -5,7 +5,7 @@ resource_policy "aws_s3_bucket" "require_owner_tag" {
   enforcement_level = "mandatory"
   operations        = ["create", "update"]
   enforce {
-    condition     = attrs.tags != null && core::contains(core::keys(attrs.tags), "Owner")
+    condition     = core::contains(core::keys(core::merge({}, attrs.tags)), "Owner")
     error_message = "S3 bucket must have an Owner tag"
   }
 }
